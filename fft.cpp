@@ -27,7 +27,7 @@ void fft::generateTwiddleFactors(){
 
     for(unsigned int count=0; count < this->points/2; count++){
         angle = freq * count;
-        this->Coeff[count] = std::complex<float>(cos(angle), -sin(angle));
+        this->Coeff[count] = std::complex<float>(-cos(angle), -sin(angle));
     }   
 }
 
@@ -94,11 +94,12 @@ void fft::computeFFT(std::complex<float> * in, std::complex<float> * out){
 
         if(stage == 1){
             pData = in;
+            pOut = out;
         } else{
             pData = out;
+            pOut = out;
         }
         pCoeff = this->Coeff;
-        pOut = out;
 
         for(group = 1; group <= maxGroup; ){
 
@@ -110,12 +111,15 @@ void fft::computeFFT(std::complex<float> * in, std::complex<float> * out){
 
             group++;
 
-            index = this->bitReverse_LUT[2*(group-1)];
-            pCoeff = &this->Coeff[index];       
-            pData = out + distanceToNextGroup * (group-1); // stage == 1 irrelevant because only 1 group
+            if(group <= maxGroup){
+                index = this->bitReverse_LUT[2*(group-1)];
+                pCoeff = &this->Coeff[index];       
+                pData = (stage == 1 ? in : out) + distanceToNextGroup * (group-1);
+                pOut = out + distanceToNextGroup * (group-1);
+            }
 
         }
-    
+        
         maxGroup *= 2;
         distanceToNextGroup /= 2;
         maxButterflys /= 2;
@@ -123,6 +127,7 @@ void fft::computeFFT(std::complex<float> * in, std::complex<float> * out){
     }
 
     unascramble(out);
+
     this->stage = 1;
     this->group = 1;
     this->butterflysCount = 0;

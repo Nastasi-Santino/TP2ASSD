@@ -1,6 +1,7 @@
 #include <complex>
 #include <cstdlib>
 #include <cmath>
+#include <stdint.h>
 
 class fft{
     public: 
@@ -11,7 +12,7 @@ class fft{
         }
 
         void computeFFT(std::complex<float> * in, std::complex<float> * out);
-
+        
 
     private:
         uint16_t points;
