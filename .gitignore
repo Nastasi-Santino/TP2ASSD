@@ -1,2 +1,8 @@
-.png
-.exe
+# Ignorar imágenes PNG
+*.png
+
+# Ignorar archivos de audio WAV
+*.wav
+
+# Ignorar ejecutables
+*.exe

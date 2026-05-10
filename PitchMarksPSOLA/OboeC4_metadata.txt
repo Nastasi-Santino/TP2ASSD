@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - OboeC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 1.70 seconds
+  Total samples: 74863
+
+Cropped Audio (Sustain Region):
+  Start time: 0.44 seconds
+  End time: 1.25 seconds
+  Duration: 0.81 seconds
+  Start sample: 19456
+  End sample: 55296
+  Total samples: 35840
+
+Pitch Marks:
+  Total pitch marks: 212
+  Average spacing: 169.1 samples
+  Min index: 112
+  Max index: 35786
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('OboeC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('OboeC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

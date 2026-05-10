@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - FluteC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 2.47 seconds
+  Total samples: 109070
+
+Cropped Audio (Sustain Region):
+  Start time: 0.64 seconds
+  End time: 1.83 seconds
+  Duration: 1.20 seconds
+  Start sample: 28160
+  End sample: 80896
+  Total samples: 52736
+
+Pitch Marks:
+  Total pitch marks: 312
+  Average spacing: 169.1 samples
+  Min index: 124
+  Max index: 52706
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('FluteC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('FluteC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')
