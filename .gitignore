@@ -3,6 +3,9 @@
 
 # Ignorar archivos de audio WAV
 *.wav
+# Excepto los que están en impulseResponses
+!impulseResponses/
+!impulseResponses/**
 
 # Ignorar ejecutables
 *.exe
