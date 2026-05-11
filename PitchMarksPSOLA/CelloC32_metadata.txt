@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - CelloC32
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 3.27 seconds
+  Total samples: 144416
+
+Cropped Audio (Sustain Region):
+  Start time: 0.84 seconds
+  End time: 2.44 seconds
+  Duration: 1.60 seconds
+  Start sample: 36864
+  End sample: 107520
+  Total samples: 70656
+
+Pitch Marks:
+  Total pitch marks: 216
+  Average spacing: 326.9 samples
+  Min index: 224
+  Max index: 70506
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('CelloC32_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('CelloC32_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

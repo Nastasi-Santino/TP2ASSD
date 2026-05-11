@@ -9,6 +9,15 @@ Sflute = 1 - Aflute - Dflute - Rflute
 A0flute = 0.6236
 alpha_flute = 0.2029
 
+CelloAk = [1, 0.2080, 0.2705, 0.3558, 0.2211, 0.1083, 0.0742, 0.0905, 0.0367, 0, 0, 0.0327]
+Acello = 0.086
+kcello = 1.62
+Dcello = 0.0633
+Rcello = 0.23
+Scello = 1 - Acello - Dcello - Rcello
+A0cello = 0.3713
+alpha_cello = 0.1169
+
 def additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='flute'):
     """
     Generate a note using additive synthesis.
@@ -27,6 +36,8 @@ def additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instru
 
     if instrument == 'flute':
         Ak = FluteAk  # Amplitude coefficients for the flute
+    elif instrument == 'cello':
+        Ak = CelloAk  # Amplitude coefficients for the cello
 
     for k in range(1, len(Ak) + 1):
         y += Ak[k - 1] * np.sin(2 * np.pi * k * f0 * t)
@@ -62,6 +73,15 @@ def additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='f
         A0 = A0flute
         alpha = alpha_flute
         k = kflute
+    elif instrument == 'cello':
+        Ak = CelloAk  # Amplitude coefficients for the cello
+        A = Acello
+        D = Dcello
+        S = Scello
+        R = Rcello
+        A0 = A0cello
+        alpha = alpha_cello
+        k = kcello
 
     for i in range(1, len(Ak) + 1):
         y += Ak[i - 1] * np.sin(2 * np.pi * i * f0 * t)
@@ -112,10 +132,14 @@ def additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrumen
         Ak = FluteAk  # Amplitude coefficients for the flute
         # Load custom envelope from CSV
         envelope_data = np.loadtxt('envelopes/FluteC4_envelope.csv', delimiter=',')
+    elif instrument == 'cello':
+        Ak = CelloAk  # Amplitude coefficients for the cello
+        # Load custom envelope from CSV
+        envelope_data = np.loadtxt('envelopes/CelloC3_envelope.csv', delimiter=',')
         
-        # Resample envelope to match the current duration
-        envelope_original_time = np.linspace(0, 1, len(envelope_data))
-        envelope = np.interp(np.linspace(0, 1, len(t)), envelope_original_time, envelope_data)
+    # Resample envelope to match the current duration
+    envelope_original_time = np.linspace(0, 1, len(envelope_data))
+    envelope = np.interp(np.linspace(0, 1, len(t)), envelope_original_time, envelope_data)
 
     for i in range(1, len(Ak) + 1):
         y += Ak[i - 1] * np.sin(2 * np.pi * i * f0 * t)
@@ -129,16 +153,51 @@ def additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrumen
 # Test Bench
 
 if __name__ == "__main__":
-    # Example usage: Generate a C4 note (261.63 Hz) for 2 seconds with amplitude 0.5
+    import soundfile as sf
+    
+    # ========== G3 Major Scale Generation ==========
+    # G3 major scale frequencies
+    g_major_scale = [
+        ('G3', 196.00),
+        ('A3', 220.00),
+        ('B3', 246.94),
+        ('C4', 261.63),
+        ('D4', 293.66),
+        ('E4', 329.63),
+        ('F#4', 369.99),
+        ('G4', 392.00),
+    ]
+    
+    note_duration = 0.12  # 120 ms per note
+    amplitude = 0.5
+    fs = 44100  # Sample rate
+    
+    # Generate all notes
+    scale_audio = np.array([])
+    
+    # print("Generating G3 Major Scale:")
+    # for note_name, frequency in g_major_scale:
+    #     # Generate note using ASDR envelope
+    #     note = additive_synthesis_with_envelope(frequency, note_duration, amplitude, fs=fs, instrument='flute')
+    #     scale_audio = np.concatenate([scale_audio, note])
+    #     print(f"  ✓ {note_name} ({frequency:.2f} Hz)")
+    
+    # # Save scale to WAV file
+    # sf.write('G3_major_scale.wav', scale_audio, fs)
+    # print(f"\n✓ G3 Major Scale saved as 'G3_major_scale.wav'")
+    # print(f"  Total duration: {len(scale_audio) / fs:.2f} seconds")
+    
+    # ========== Individual Examples ==========
+    print("\nGenerating individual examples:")
     f0 = 261.63  # Frequency of C4
     duration = 2.0  # Duration in seconds
     Amplitud = 0.5  # Amplitude
-    synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='flute')
-    synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='flute')
-    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='flute')
+    synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='cello')
+    synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='cello')
+    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='cello')
 
-    # Save the synthesized note to a WAV file
-    import soundfile as sf
-    sf.write('synthesized_C4_flute.wav', synthesized_note, 44100)
-    sf.write('synthesized_C4_flute_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
-    sf.write('synthesized_C4_flute_with_envelope.wav', synthesized_note_with_envelope, 44100)
+    # Save the synthesized notes to WAV files
+    sf.write('synthesized_C3_cello.wav', synthesized_note, 44100)
+    sf.write('synthesized_C3_cello_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
+    sf.write('synthesized_C3_cello_with_envelope.wav', synthesized_note_with_envelope, 44100)
+    print("  ✓ Individual notes saved")

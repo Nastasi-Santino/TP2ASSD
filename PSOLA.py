@@ -189,10 +189,10 @@ def PSOLA_pitch_shift(x, pitchMarks, beta):
 
 if __name__ == "__main__":
     # Load the cropped audio
-    audio, sr = sf.read('PitchMarksPSOLA/OboeC4_cropped.wav')
+    audio, sr = sf.read('PitchMarksPSOLA/CelloC32_cropped.wav')
 
     # Load pitch mark indices
-    marks = np.load('PitchMarksPSOLA/OboeC4_pitch_marks_indices.npy')
+    marks = np.load('PitchMarksPSOLA/CelloC32_pitch_marks_indices.npy')
 
     # Define the scale from C3 to C5 (original is C4)
     # Semitone offsets from C4 for each note
@@ -232,5 +232,5 @@ if __name__ == "__main__":
     full_scale = np.concatenate(scale_audio)
     
     # Save the scale
-    sf.write('OboeScale_C3_to_C5.wav', full_scale, sr)
-    print("Scale saved as 'OboeScale_C3_to_C5.wav'")
+    sf.write('CelloScale_C32_to_C5.wav', full_scale, sr)
+    print("Scale saved as 'CelloScale_C32_to_C5.wav'")

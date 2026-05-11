@@ -1,4 +1,5 @@
 import scipy.signal as signal
+import scipy.io.wavfile as wavfile
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -65,27 +66,17 @@ def spectogram(data, fs, nSegment=256, overlapPorcentage=None, window='hann'):
 # Testbench
 
 if __name__ == "__main__":
-    # Generate an FM (Frequency Modulated) signal with time-varying frequency
-    fs = 1000  # Sampling frequency (Hz)
-    duration = 3  # Duration (seconds)
-    t = np.linspace(0, duration, int(fs * duration), endpoint=False)  # Time vector
+    # Load the G3 major scale audio file
+    fs, audio = wavfile.read('G3_major_scale.wav')
     
-    # FM Signal: Carrier frequency modulated by a sine wave
-    carrier_freq = 100  # Carrier frequency (Hz)
-    mod_freq = 2  # Modulation frequency (Hz)
-    freq_deviation = 50  # Frequency deviation (Hz)
+    # Convert to mono if stereo
+    if len(audio.shape) > 1:
+        audio = audio[:, 0]
     
-    # Instantaneous frequency varies as: f(t) = f_c + Δf * sin(2π * f_m * t)
-    instantaneous_phase = 2 * np.pi * carrier_freq * t + (freq_deviation / mod_freq) * np.cos(2 * np.pi * mod_freq * t)
-    signal_data = np.sin(instantaneous_phase)
+    print(f"Loaded G3_major_scale.wav")
+    print(f"Sample rate: {fs} Hz")
+    print(f"Duration: {len(audio) / fs:.3f} seconds")
+    print(f"\nGenerating spectrogram...")
     
-    # Add a chirp component for more complexity (frequency sweeps from 200 to 50 Hz)
-    chirp = signal.chirp(t, f0=200, f1=50, t1=duration, method='linear')
-    
-    # Combine FM and chirp with a brief pulse
-    pulse = np.exp(-((t - 1.5) / 0.3) ** 2) * np.sin(2 * np.pi * 150 * t)
-    
-    signal_data = 0.5 * signal_data + 0.3 * chirp + 0.4 * pulse
-
     # Compute and plot the spectrogram
-    spectogram(signal_data, fs, nSegment=256, overlapPorcentage=75, window='hamming')
+    spectogram(audio, fs, nSegment=1024, overlapPorcentage=75, window='hann')
