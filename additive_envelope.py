@@ -96,5 +96,11 @@ if __name__ == "__main__":
     
     plt.tight_layout()
     plt.savefig(f'envelope_{audio_file.replace(".wav", ".png")}', dpi=150)
+    
+    # Export envelope to CSV
+    csv_filename = f'{audio_file.replace(".wav", "")}_envelope.csv'
+    np.savetxt(csv_filename, env1, delimiter=',', fmt='%.6f', header='Envelope_Amplitude')
+    print(f"\n✓ Envelope exported to '{csv_filename}'")
+    
     plt.show()
     

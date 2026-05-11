@@ -91,6 +91,41 @@ def additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='f
     
     return y
 
+def additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='flute'):
+    """
+    Generate a note using additive synthesis with a custom envelope.
+    
+    Parameters:
+    f0: fundamental frequency (Hz)
+    duration: duration of the note (seconds)
+    Amplitud: peak amplitude of the note
+    fs: sampling rate (default 44100 Hz)
+    instrument: type of instrument ('flute' supported)
+    
+    Returns:
+    y: synthesized audio signal
+    """
+    t = np.linspace(0, duration, int(fs * duration), endpoint=False)  # Time vector
+    y = np.zeros_like(t)  # Initialize output signal
+
+    if instrument == 'flute':
+        Ak = FluteAk  # Amplitude coefficients for the flute
+        # Load custom envelope from CSV
+        envelope_data = np.loadtxt('envelopes/FluteC4_envelope.csv', delimiter=',')
+        
+        # Resample envelope to match the current duration
+        envelope_original_time = np.linspace(0, 1, len(envelope_data))
+        envelope = np.interp(np.linspace(0, 1, len(t)), envelope_original_time, envelope_data)
+
+    for i in range(1, len(Ak) + 1):
+        y += Ak[i - 1] * np.sin(2 * np.pi * i * f0 * t)
+
+    y = y / np.max(np.abs(y))  # Normalize to [-1, 1]
+    y *= envelope  # Apply custom envelope
+    y *= Amplitud / np.max(np.abs(y))
+    
+    return y
+
 # Test Bench
 
 if __name__ == "__main__":
@@ -99,8 +134,11 @@ if __name__ == "__main__":
     duration = 2.0  # Duration in seconds
     Amplitud = 0.5  # Amplitude
     synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='flute')
-    synthesized_note_with_envelope = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='flute')
+    synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='flute')
+    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='flute')
+
     # Save the synthesized note to a WAV file
     import soundfile as sf
     sf.write('synthesized_C4_flute.wav', synthesized_note, 44100)
+    sf.write('synthesized_C4_flute_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
     sf.write('synthesized_C4_flute_with_envelope.wav', synthesized_note_with_envelope, 44100)
