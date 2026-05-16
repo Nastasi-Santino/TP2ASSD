@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - PianoC3
+============================================================
+
+Original Audio:
+  Sampling frequency: 48000 Hz
+  Total duration: 2.96 seconds
+  Total samples: 142126
+
+Cropped Audio (Sustain Region):
+  Start time: 0.76 seconds
+  End time: 2.20 seconds
+  Duration: 1.44 seconds
+  Start sample: 36352
+  End sample: 105472
+  Total samples: 69120
+
+Pitch Marks:
+  Total pitch marks: 190
+  Average spacing: 364.3 samples
+  Min index: 99
+  Max index: 68953
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('PianoC3_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('PianoC3_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

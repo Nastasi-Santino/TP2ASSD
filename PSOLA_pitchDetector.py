@@ -27,7 +27,7 @@ except ImportError:
 # ==================== MACRO: SELECT INSTRUMENT ====================
 # Change this to select which instrument to analyze
 # Available options: 'FluteC4', 'GuitarC4', 'PianoC4', etc.
-INSTRUMENT = 'CelloC32'
+INSTRUMENT = 'PianoC3'
 # ===================================================================
 
 

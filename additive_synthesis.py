@@ -18,6 +18,8 @@ Scello = 1 - Acello - Dcello - Rcello
 A0cello = 0.3713
 alpha_cello = 0.1169
 
+PianoAk = [1.0000, 9.8653, 1.2526, 0.5044, 1.2690, 0.8709, 4.9047, 0.4080, 1.2052, 2.3297, 1.0400, 0.7977, 0.4121, 1.4634, 0.5920]
+
 def additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='flute'):
     """
     Generate a note using additive synthesis.
@@ -38,6 +40,8 @@ def additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instru
         Ak = FluteAk  # Amplitude coefficients for the flute
     elif instrument == 'cello':
         Ak = CelloAk  # Amplitude coefficients for the cello
+    elif instrument == 'piano':
+        Ak = PianoAk  # Amplitude coefficients for the piano
 
     for k in range(1, len(Ak) + 1):
         y += Ak[k - 1] * np.sin(2 * np.pi * k * f0 * t)
@@ -136,6 +140,10 @@ def additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrumen
         Ak = CelloAk  # Amplitude coefficients for the cello
         # Load custom envelope from CSV
         envelope_data = np.loadtxt('envelopes/CelloC3_envelope.csv', delimiter=',')
+    elif instrument == 'piano':
+        Ak = PianoAk  # Amplitude coefficients for the piano
+        # Load custom envelope from CSV
+        envelope_data = np.loadtxt('envelopes/PianoC3_envelope.csv', delimiter=',')
         
     # Resample envelope to match the current duration
     envelope_original_time = np.linspace(0, 1, len(envelope_data))
@@ -192,12 +200,12 @@ if __name__ == "__main__":
     f0 = 261.63  # Frequency of C4
     duration = 2.0  # Duration in seconds
     Amplitud = 0.5  # Amplitude
-    synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='cello')
-    synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='cello')
-    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='cello')
+    synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='piano')
+    #synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='cello')
+    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='piano')
 
     # Save the synthesized notes to WAV files
-    sf.write('synthesized_C3_cello.wav', synthesized_note, 44100)
-    sf.write('synthesized_C3_cello_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
-    sf.write('synthesized_C3_cello_with_envelope.wav', synthesized_note_with_envelope, 44100)
+    sf.write('synthesized_C4_piano.wav', synthesized_note, 44100)
+    #sf.write('synthesized_C4_cello_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
+    sf.write('synthesized_C4_piano_with_envelope.wav', synthesized_note_with_envelope, 44100)
     print("  ✓ Individual notes saved")
