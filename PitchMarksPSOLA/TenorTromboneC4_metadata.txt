@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - TenorTromboneC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 2.39 seconds
+  Total samples: 105534
+
+Cropped Audio (Sustain Region):
+  Start time: 0.43 seconds
+  End time: 1.07 seconds
+  Duration: 0.64 seconds
+  Start sample: 18944
+  End sample: 47103
+  Total samples: 28159
+
+Pitch Marks:
+  Total pitch marks: 167
+  Average spacing: 168.8 samples
+  Min index: 10
+  Max index: 28023
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('TenorTromboneC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('TenorTromboneC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

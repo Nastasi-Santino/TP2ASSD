@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - AltoSaxC42
+============================================================
+
+Original Audio:
+  Sampling frequency: 48000 Hz
+  Total duration: 2.28 seconds
+  Total samples: 109551
+
+Cropped Audio (Sustain Region):
+  Start time: 0.59 seconds
+  End time: 1.69 seconds
+  Duration: 1.10 seconds
+  Start sample: 28160
+  End sample: 80896
+  Total samples: 52736
+
+Pitch Marks:
+  Total pitch marks: 287
+  Average spacing: 183.8 samples
+  Min index: 71
+  Max index: 52640
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('AltoSaxC42_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('AltoSaxC42_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

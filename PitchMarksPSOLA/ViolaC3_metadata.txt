@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - ViolaC3
+============================================================
+
+Original Audio:
+  Sampling frequency: 48000 Hz
+  Total duration: 2.88 seconds
+  Total samples: 138429
+
+Cropped Audio (Sustain Region):
+  Start time: 0.74 seconds
+  End time: 2.14 seconds
+  Duration: 1.41 seconds
+  Start sample: 35328
+  End sample: 102912
+  Total samples: 67584
+
+Pitch Marks:
+  Total pitch marks: 185
+  Average spacing: 366.7 samples
+  Min index: 2
+  Max index: 67472
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('ViolaC3_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('ViolaC3_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

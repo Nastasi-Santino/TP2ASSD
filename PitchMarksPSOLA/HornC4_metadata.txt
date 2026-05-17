@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - HornC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 2.41 seconds
+  Total samples: 106153
+
+Cropped Audio (Sustain Region):
+  Start time: 0.63 seconds
+  End time: 1.79 seconds
+  Duration: 1.16 seconds
+  Start sample: 27648
+  End sample: 78848
+  Total samples: 51200
+
+Pitch Marks:
+  Total pitch marks: 302
+  Average spacing: 169.4 samples
+  Min index: 130
+  Max index: 51106
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('HornC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('HornC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

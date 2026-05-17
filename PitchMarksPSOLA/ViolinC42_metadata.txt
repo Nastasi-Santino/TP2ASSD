@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - ViolinC42
+============================================================
+
+Original Audio:
+  Sampling frequency: 48000 Hz
+  Total duration: 2.09 seconds
+  Total samples: 100532
+
+Cropped Audio (Sustain Region):
+  Start time: 0.54 seconds
+  End time: 1.55 seconds
+  Duration: 1.00 seconds
+  Start sample: 26112
+  End sample: 74240
+  Total samples: 48128
+
+Pitch Marks:
+  Total pitch marks: 260
+  Average spacing: 184.7 samples
+  Min index: 151
+  Max index: 47976
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('ViolinC42_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('ViolinC42_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

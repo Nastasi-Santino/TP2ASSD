@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - SopSaxC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 3.67 seconds
+  Total samples: 161925
+
+Cropped Audio (Sustain Region):
+  Start time: 0.94 seconds
+  End time: 2.73 seconds
+  Duration: 1.79 seconds
+  Start sample: 41472
+  End sample: 120320
+  Total samples: 78848
+
+Pitch Marks:
+  Total pitch marks: 0
+  Average spacing: 0.0 samples
+  Min index: N/A
+  Max index: N/A
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('SopSaxC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('SopSaxC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

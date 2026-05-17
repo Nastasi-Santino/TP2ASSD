@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - EbClarinetC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 48000 Hz
+  Total duration: 1.93 seconds
+  Total samples: 92593
+
+Cropped Audio (Sustain Region):
+  Start time: 0.50 seconds
+  End time: 1.42 seconds
+  Duration: 0.92 seconds
+  Start sample: 24064
+  End sample: 68096
+  Total samples: 44032
+
+Pitch Marks:
+  Total pitch marks: 238
+  Average spacing: 185.0 samples
+  Min index: 44
+  Max index: 43885
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('EbClarinetC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('EbClarinetC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')
