@@ -30,7 +30,7 @@ def envelope_hilbert(x):
 # Test Bench
 if __name__ == "__main__":
     # ============ SELECT AUDIO FILE ============
-    audio_file = "PianoC3.wav"  # Change this to select different instrument
+    audio_file = "TrumpetC4.wav"  # Change this to select different instrument
     # ============================================
     
     # Load audio
@@ -48,32 +48,32 @@ if __name__ == "__main__":
     # # Time array
     time = np.arange(len(audio)) / sr
     
-    # threshold_attack = 0.6 * np.max(env1)
-    # i_A = np.where(env1 >= threshold_attack)[0][0]
-    # A_time = time[i_A]
-    # A_fraction  = A_time / (len(audio) / sr)
+    threshold_attack = 0.92 * np.max(env1)
+    i_A = np.where(env1 >= threshold_attack)[0][0]
+    A_time = time[i_A]
+    A_fraction  = A_time / (len(audio) / sr)
 
-    # threshold_decay_end = 0.5 * np.max(env1)
-    # # buscar cerca del final dónde deja de estar alta
-    # D_end = np.where((time > A_time) & (env1 < threshold_decay_end))[0][0]
-    # D_fraction = (time[D_end] - A_time) / (len(audio) / sr)
+    threshold_decay_end = 0.999 * np.max(env1)
+    # buscar cerca del final dónde deja de estar alta
+    D_end = np.where((time > A_time) & (env1 > threshold_decay_end))[0][0]
+    D_fraction = (time[D_end] - A_time) / (len(audio) / sr)
 
-    # threshold_release_start = 0.95 * np.max(env1)
-    # # buscar cerca del final dónde deja de estar alta
-    # i_R_start = np.where((time > 1.8) & (env1 > threshold_release_start))[0][0]
-    # R_fraction = (len(audio) / sr - time[i_R_start]) / (len(audio) / sr)
+    threshold_release_start = 0.7 * np.max(env1)
+    # buscar cerca del final dónde deja de estar alta
+    i_R_start = np.where((time > 3) & (env1 < threshold_release_start))[0][0]
+    R_fraction = (len(audio) / sr - time[i_R_start]) / (len(audio) / sr)
 
-    # t_s = time[D_end:i_R_start]
-    # env_s = env1[D_end:i_R_start]
-    # coeffs = np.polyfit(t_s, env_s, 1)
+    t_s = time[D_end:i_R_start]
+    env_s = env1[D_end:i_R_start]
+    coeffs = np.polyfit(t_s, env_s, 1)
 
-    # alpha = coeffs[0]
-    # A0 = coeffs[1]
+    alpha = coeffs[0]
+    A0 = coeffs[1]
 
-    # print(f"Attack time: {A_time:.3f} s ({A_fraction:.2%} of total duration)")
-    # print(f"Decay time: {time[D_end]:.3f} s ({D_fraction:.2%} of total duration)")
-    # print(f"Release start time: {time[i_R_start]:.3f} s ({R_fraction:.2%} of total duration)")
-    # print(f"Linear fit coefficients: alpha = {alpha:.4f}, A0 = {A0:.4f}")
+    print(f"Attack time: {A_time:.3f} s ({A_fraction:.2%} of total duration)")
+    print(f"Decay time: {time[D_end]:.3f} s ({D_fraction:.2%} of total duration)")
+    print(f"Release start time: {time[i_R_start]:.3f} s ({R_fraction:.2%} of total duration)")
+    print(f"Linear fit coefficients: alpha = {alpha:.4f}, A0 = {A0:.4f}")
 
     # Plot
     plt.figure(figsize=(14, 8))
@@ -104,9 +104,9 @@ if __name__ == "__main__":
     plt.savefig(f'envelope_{audio_file.replace(".wav", ".png")}', dpi=150)
     
     # Export envelope to CSV
-    csv_filename = f'{audio_file.replace(".wav", "")}_envelope.csv'
-    np.savetxt(csv_filename, env1, delimiter=',', fmt='%.6f', header='Envelope_Amplitude')
-    print(f"\n✓ Envelope exported to '{csv_filename}'")
+    # csv_filename = f'{audio_file.replace(".wav", "")}_envelope.csv'
+    # np.savetxt(csv_filename, env1, delimiter=',', fmt='%.6f', header='Envelope_Amplitude')
+    # print(f"\n✓ Envelope exported to '{csv_filename}'")
     
     plt.show()
     

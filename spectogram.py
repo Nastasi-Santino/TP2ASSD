@@ -5,36 +5,23 @@ import numpy as np
 
 
 def spectogram(data, fs, nSegment=256, overlapPorcentage=None, window='hann'):
-    """
-    Compute and plot the spectrogram of a signal.
 
-    Parameters:
-    data (array-like): Input signal.
-    fs (float): Sampling frequency of the signal.
-    nSegment (int): Length of each segment for the spectrogram. Default is 256.
-    overlapPorcentage (float): Percentage of overlap between segments. Default is None (no overlap).
-    window (str or tuple): Desired window to use. Default is 'hann'.
-
-    Returns:
-    None
-    """
-    
-    # Set default overlap to 0 if not specified
+    # Si no especifica, default 0% de overlap
     if overlapPorcentage is None:
         noverlap = 0
     else:
         noverlap = int(nSegment * overlapPorcentage / 100)
 
-    # Stride between segment starts: distance to skip when moving to next segment
+    # Distancia entre segmentos solapados
     stride = nSegment - noverlap
     
-    # Generate all segment starting indices
+    # Genera indices de inicio de cada segmento
     segment_starts = range(0, len(data) - nSegment + 1, stride)
     
-    # Extract overlapping segments
+    # Extrae segmentos de la señal
     segments = np.array([data[i:i + nSegment] for i in segment_starts])
 
-    # Compute the fft for each segment
+    # Elige la ventana y aplica la FFT a cada segmento
     try:
         window_func = signal.get_window(window, nSegment)
     except ValueError:
@@ -42,17 +29,17 @@ def spectogram(data, fs, nSegment=256, overlapPorcentage=None, window='hann'):
 
     ffts = np.fft.fft(segments * window_func, axis=1)
     
-    # Compute magnitude spectrum and keep only positive frequencies
+    # Solo nos interesan las frecuencias positivas y la magnitud
     magnitude = np.abs(ffts)
-    magnitude = magnitude[:, :nSegment // 2]  # Keep only positive frequencies
+    magnitude = magnitude[:, :nSegment // 2]  # Solo la mitad positiva
     
-    # Frequency axis (Hz)
+    # Eje de frecuencias (Hz)
     freqs = np.fft.fftfreq(nSegment, 1/fs)[:nSegment // 2]
     
-    # Time axis (seconds) - center of each segment
+    # Eje de tiempo (segundos) - centro de cada segmento
     times = np.array([i / fs for i in segment_starts])
     
-    # Create the spectrogram plot
+    # Graficar el espectrograma
     plt.figure(figsize=(12, 6))
     plt.pcolormesh(times, freqs, magnitude.T, shading='auto', cmap='viridis')
     plt.colorbar(label='Magnitude')
@@ -66,10 +53,11 @@ def spectogram(data, fs, nSegment=256, overlapPorcentage=None, window='hann'):
 # Testbench
 
 if __name__ == "__main__":
-    # Load the G3 major scale audio file
+
+    # Carga la escala de sol mayor
     fs, audio = wavfile.read('G3_major_scale.wav')
     
-    # Convert to mono if stereo
+    # Convierte a mono si es estéreo
     if len(audio.shape) > 1:
         audio = audio[:, 0]
     
@@ -78,5 +66,5 @@ if __name__ == "__main__":
     print(f"Duration: {len(audio) / fs:.3f} seconds")
     print(f"\nGenerating spectrogram...")
     
-    # Compute and plot the spectrogram
+    # Genera el espectrograma con 1024 muestras por segmento y 75% de overlap
     spectogram(audio, fs, nSegment=1024, overlapPorcentage=75, window='hann')

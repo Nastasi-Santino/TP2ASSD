@@ -1,0 +1,35 @@
+PSOLA Pitch Detector - TrumpetC4
+============================================================
+
+Original Audio:
+  Sampling frequency: 44100 Hz
+  Total duration: 4.33 seconds
+  Total samples: 190739
+
+Cropped Audio (Sustain Region):
+  Start time: 1.10 seconds
+  End time: 3.22 seconds
+  Duration: 2.11 seconds
+  Start sample: 48640
+  End sample: 141824
+  Total samples: 93184
+
+Pitch Marks:
+  Total pitch marks: 554
+  Average spacing: 168.1 samples
+  Min index: 119
+  Max index: 93087
+
+How to use in Python:
+  import numpy as np
+  import soundfile as sf
+
+  # Load cropped audio
+  audio, sr = sf.read('TrumpetC4_cropped.wav')
+
+  # Load pitch mark indices
+  marks = np.load('TrumpetC4_pitch_marks_indices.npy')
+
+  # Access audio at pitch marks
+  for i, mark_idx in enumerate(marks):
+      print(f'Pitch mark {i} at sample {mark_idx}: audio[{mark_idx}] = {audio[mark_idx]}')

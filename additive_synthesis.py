@@ -19,6 +19,22 @@ A0cello = 0.3713
 alpha_cello = 0.1169
 
 PianoAk = [1.0000, 9.8653, 1.2526, 0.5044, 1.2690, 0.8709, 4.9047, 0.4080, 1.2052, 2.3297, 1.0400, 0.7977, 0.4121, 1.4634, 0.5920]
+Apiano = 0.0251
+kpiano = 1
+Dpiano = 0
+Spiano = 0
+Rpiano = 1 - Apiano - Dpiano - Spiano
+A0piano = 1
+alpha_piano = 0
+
+TrumpetAk = [1, 3.9291, 6.8011, 9.9342, 9.7906, 6.9109, 4.1108, 2.7408, 2.5192, 1.8966,1.5985, 1.4077, 1.0411, 0.8207]
+Atrumpet = 0.0414
+ktrumpet = 1/0.92
+Dtrumpet = 0.1269
+Rtrumpet = 0.0636
+Strumpet = 1 - Atrumpet - Dtrumpet - Rtrumpet
+A0trumpet = 1.0435
+alpha_trumpet = -0.0616
 
 def additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='flute'):
     """
@@ -42,6 +58,8 @@ def additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instru
         Ak = CelloAk  # Amplitude coefficients for the cello
     elif instrument == 'piano':
         Ak = PianoAk  # Amplitude coefficients for the piano
+    elif instrument == 'trumpet':
+        Ak = TrumpetAk  # Amplitude coefficients for the trumpet
 
     for k in range(1, len(Ak) + 1):
         y += Ak[k - 1] * np.sin(2 * np.pi * k * f0 * t)
@@ -86,7 +104,25 @@ def additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='f
         A0 = A0cello
         alpha = alpha_cello
         k = kcello
-
+    elif instrument == 'piano':
+        Ak = PianoAk  # Amplitude coefficients for the piano
+        A = Apiano
+        D = Dpiano
+        S = Spiano
+        R = Rpiano
+        A0 = A0piano
+        alpha = alpha_piano
+        k = kpiano
+    elif instrument == 'trumpet':
+        Ak = TrumpetAk  # Amplitude coefficients for the trumpet
+        A = Atrumpet
+        D = Dtrumpet
+        S = Strumpet
+        R = Rtrumpet
+        A0 = A0trumpet
+        alpha = alpha_trumpet
+        k = ktrumpet
+    
     for i in range(1, len(Ak) + 1):
         y += Ak[i - 1] * np.sin(2 * np.pi * i * f0 * t)
 
@@ -144,6 +180,10 @@ def additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrumen
         Ak = PianoAk  # Amplitude coefficients for the piano
         # Load custom envelope from CSV
         envelope_data = np.loadtxt('envelopes/PianoC3_envelope.csv', delimiter=',')
+    elif instrument == 'trumpet':
+        Ak = TrumpetAk  # Amplitude coefficients for the trumpet
+        # Load custom envelope from CSV
+        envelope_data = np.loadtxt('envelopes/TrumpetC4_envelope.csv', delimiter=',')
         
     # Resample envelope to match the current duration
     envelope_original_time = np.linspace(0, 1, len(envelope_data))
@@ -200,12 +240,12 @@ if __name__ == "__main__":
     f0 = 261.63  # Frequency of C4
     duration = 2.0  # Duration in seconds
     Amplitud = 0.5  # Amplitude
-    synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='piano')
-    #synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='cello')
-    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='piano')
+    synthesized_note = additive_synthesis_without_envelope(f0, duration, Amplitud, fs=44100, instrument='trumpet')
+    synthesized_note_with_ASDR = additive_synthesis_with_ASDR(f0, duration, Amplitud, fs=44100, instrument='trumpet')
+    synthesized_note_with_envelope = additive_synthesis_with_envelope(f0, duration, Amplitud, fs=44100, instrument='trumpet')
 
     # Save the synthesized notes to WAV files
-    sf.write('synthesized_C4_piano.wav', synthesized_note, 44100)
-    #sf.write('synthesized_C4_cello_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
-    sf.write('synthesized_C4_piano_with_envelope.wav', synthesized_note_with_envelope, 44100)
+    sf.write('synthesized_C4_trumpet.wav', synthesized_note, 44100)
+    sf.write('synthesized_C4_trumpet_with_ASDR.wav', synthesized_note_with_ASDR, 44100)
+    sf.write('synthesized_C4_trumpet_with_envelope.wav', synthesized_note_with_envelope, 44100)
     print("  ✓ Individual notes saved")

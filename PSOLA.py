@@ -189,10 +189,10 @@ def PSOLA_pitch_shift(x, pitchMarks, beta):
 
 if __name__ == "__main__":
     # Load the cropped audio
-    audio, sr = sf.read('PitchMarksPSOLA/PianoC3_cropped.wav')
+    audio, sr = sf.read('PitchMarksPSOLA/TrumpetC4_cropped.wav')
 
     # Load pitch mark indices
-    marks = np.load('PitchMarksPSOLA/PianoC3_pitch_marks_indices.npy')
+    marks = np.load('PitchMarksPSOLA/TrumpetC4_pitch_marks_indices.npy')
 
     # Define the scale from C3 to C5 (original is C4)
     # Semitone offsets from C4 for each note
@@ -220,7 +220,7 @@ if __name__ == "__main__":
     for note_name, semitones in scale_notes:
         # Calculate pitch shift factor from semitone offset
         # beta = 2^(semitones/12)
-        beta = 2 ** ((semitones+12) / 12)
+        beta = 2 ** ((semitones) / 12)
         
         # Pitch shift the audio
         shifted = PSOLA_pitch_shift(audio, marks, beta)
@@ -232,5 +232,5 @@ if __name__ == "__main__":
     full_scale = np.concatenate(scale_audio)
     
     # Save the scale
-    sf.write('PianoScale_C3_to_C5.wav', full_scale, sr)
-    print("Scale saved as 'PianoScale_C3_to_C5.wav'")
+    sf.write('TrumpetScale_C3_to_C5.wav', full_scale, sr)
+    print("Scale saved as 'TrumpetScale_C3_to_C5.wav'")
