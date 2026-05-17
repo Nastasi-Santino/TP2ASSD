@@ -9,8 +9,11 @@
 
 void genData(std::complex<float> * data, uint16_t n){
     for(unsigned int count=0; count < n; count++){
-        data[count] = std::complex<float>(10*cosf(2.0f * PI * count / n), 0.0f);
-        //data[count] = std::complex<float>((count + 1)*10.0f, 0.0f);
+        float real = 10*cosf(2.0f * PI * 10.17 * count / n) +      // Bin 10, amplitude 10
+                     7*cosf(2.0f * PI * 50.83 * count / n) +       // Bin 50, amplitude 7
+                     5*cosf(2.0f * PI * 200.5 * count / n) +      // Bin 200, amplitude 5
+                     3*cosf(2.0f * PI * 800.662 * count / n);       // Bin 800, amplitude 3
+        data[count] = std::complex<float>(real, 0.0f);
     }
 }
 
@@ -65,7 +68,7 @@ int main(){
     }
 
     float error_magnitude = sqrt(error_real * error_real + error_imag * error_imag);
-    printf("Error Magnitude: %f\n", error_magnitude);
+    printf("Error Magnitude: %f\n", error_magnitude/N_s);
 
     // Export results to CSV
     FILE* csv_file = fopen("fft_dft_comparison.csv", "w");
